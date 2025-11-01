@@ -90,6 +90,25 @@ export const getTopRateMoviesToday = async () => {
   return await response.json();
 };
 
+export const getPopularMovies = async () => {
+  const response = await fetch(
+    `https://api.themoviedb.org/3/movie/popular?api_key=${import.meta.env.VITE_TMDB_KEY}`
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch trending movies");
+  }
+  return await response.json();
+};
+
+export const getUpcomingMovies = async () => {
+  const response = await fetch(
+    `https://api.themoviedb.org/3/movie/upcoming?api_key=${import.meta.env.VITE_TMDB_KEY}`
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch trending movies");
+  }
+  return await response.json();
+};
 
 
 
@@ -110,3 +129,41 @@ export const getTopRateMoviesToday = async () => {
       throw error
    });
   };
+
+export const getMovieRecommendations = async ({ queryKey }) => {
+  const [, { id }] = queryKey;
+  const response = await fetch(
+    `https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=${import.meta.env.VITE_TMDB_KEY}`
+  );
+  if (!response.ok) throw new Error("Failed to fetch movie recommendations");
+  return await response.json();
+};
+
+export const getMovieCredits = async ({ queryKey }) => {
+  const [, { id }] = queryKey; 
+  const response = await fetch(
+    `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${import.meta.env.VITE_TMDB_KEY}`
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch movie credits");
+  }
+  return await response.json();
+};
+
+export const getPersonDetails = async ({ queryKey }) => {
+  const [, { id }] = queryKey;
+  const response = await fetch(
+    `https://api.themoviedb.org/3/person/${id}?api_key=${import.meta.env.VITE_TMDB_KEY}`
+  );
+  if (!response.ok) throw new Error("Failed to fetch person details");
+  return await response.json();
+};
+
+export const getPersonMovieCredits = async ({ queryKey }) => {
+  const [, { id }] = queryKey;
+  const response = await fetch(
+    `https://api.themoviedb.org/3/person/${id}/movie_credits?api_key=${import.meta.env.VITE_TMDB_KEY}`
+  );
+  if (!response.ok) throw new Error("Failed to fetch person movie credits");
+  return await response.json();
+};

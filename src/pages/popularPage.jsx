@@ -4,13 +4,13 @@ import PageTemplate from '../components/templateMovieListPage';
 import { useQuery } from '@tanstack/react-query';
 import Spinner from '../components/spinner';
 import AddToFavoritesIcon from '../components/cardIcons/addToFavorites';
-import { getTopRateMoviesToday } from "../api/tmdb-api";
+import { getPopularMovies } from "../api/tmdb-api";
 
-const TopRatePage = (props) => {
+const PopularPage = (props) => {
 
   const { data, error, isPending, isError } = useQuery({
-    queryKey: ["top rate"],
-    queryFn: getTopRateMoviesToday,
+    queryKey: ["popular"],
+    queryFn: getPopularMovies,
   })
 
   if (isPending) {
@@ -30,7 +30,7 @@ const TopRatePage = (props) => {
 
   return (
     <PageTemplate
-      title="Top Rated Movies"
+      title="Popular Movies"
       movies={movies}
       action={(movie) => {
         return <AddToFavoritesIcon movie={movie} />
@@ -40,4 +40,4 @@ const TopRatePage = (props) => {
 
 };
 
-export default TopRatePage;
+export default PopularPage;
