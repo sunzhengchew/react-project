@@ -11,17 +11,19 @@ import Typography from "@mui/material/Typography";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import CalendarTodayTwoToneIcon from "@mui/icons-material/CalendarTodayTwoTone";
 import StarRateIcon from "@mui/icons-material/StarRate";
-import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import img from "../../images/film-poster-placeholder.png";
+import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
 
 export default function MovieCard({ movie, action }) {
-  const { favorites, addToFavorites } = useContext(MoviesContext);
+const { favorites, playlist, addToFavorites, addToPlaylist } = useContext(MoviesContext);
 
   const isFavorite = favorites.includes(movie.id);
-  movie.favorite = isFavorite;
+const isInPlaylist = playlist.includes(movie.id);
+movie.favorite = isFavorite;
+movie.inPlaylist = isInPlaylist;
 
   const handleAddToFavorite = (e) => {
     e.preventDefault();
@@ -46,13 +48,22 @@ export default function MovieCard({ movie, action }) {
 
       <CardHeader
         avatar={
-          movie.favorite && (
+          <>
+          {movie.favorite && (
             <Tooltip title="In Favorites">
-              <Avatar sx={{ backgroundColor: "#f44336" }}>
+              <Avatar sx={{ backgroundColor: "#f44336", width: 30, height: 30 }}>
                 <FavoriteIcon />
               </Avatar>
             </Tooltip>
-          )
+          )}
+          {movie.inPlaylist && (
+        <Tooltip title="In Playlist">
+          <Avatar sx={{ backgroundColor: "#1976d2", width: 30, height: 30 }}>
+            <PlaylistAddCheckIcon fontSize="small" />
+          </Avatar>
+        </Tooltip>
+      )}
+      </>
         }
         title={
           <Typography
