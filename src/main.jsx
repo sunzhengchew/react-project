@@ -5,6 +5,7 @@ import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import HomePage from "./pages/homePage";
 import MoviePage from "./pages/movieDetailsPage";
+import PlaylistMoviesPage from "./pages/playlistPage";
 import FavoriteMoviesPage from "./pages/favoriteMoviesPage";
 import MovieReviewPage from "./pages/movieReviewPage";
 import SiteHeader from './components/siteHeader';
@@ -44,6 +45,7 @@ const App = () => {
             <Route path="/movies/popular" element={<PopularPage />} />
             <Route path="/movies/upcoming" element={<UpcomingPage />} />
             <Route path="/person/:id" element={<PersonDetailsPage />} />
+            <Route path="/movies/playlist" element={<PlaylistMoviesPage />} />
           </Routes>
         </MoviesContextProvider>
       </BrowserRouter>

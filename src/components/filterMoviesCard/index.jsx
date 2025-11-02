@@ -2,7 +2,6 @@ import React from "react";
 import { useQuery } from '@tanstack/react-query';
 import Spinner from '../spinner';
 import Card from "@mui/material/Card";
-import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
@@ -53,61 +52,80 @@ export default function FilterMoviesCard(props) {
         handleChange(e, "genre", e.target.value);
     };
 
+    const handleYearChange = (e) => {
+    handleChange(e, "year", e.target.value);
+  };
+
+  const handleRatingChange = (e) => {
+    handleChange(e, "minRating", e.target.value);
+  };
 
 
     return (
-        <Card
-            sx={{
-                backgroundColor: "rgb(204, 204, 0)"
-            }}
-            variant="outlined">
-            <CardContent>
-                <Typography variant="h5" component="h1">
-                    <SearchIcon fontSize="large" />
-                    Filter the movies.
-                </Typography>
-                <TextField
-                    sx={{ ...formControl }}
-                    id="filled-search"
-                    label="Search field"
-                    type="search"
-                    variant="filled"
-                    value={props.titleFilter}
-                    onChange={handleTextChange}
-                />
+    <Card sx={{ backgroundColor: "rgb(204, 204, 0)" }} variant="outlined">
+      <CardContent>
+        <Typography variant="h5" component="h1">
+          <SearchIcon fontSize="large" />
+          Filter the movies.
+        </Typography>
 
-                <FormControl sx={{ ...formControl }}>
-                    <InputLabel id="genre-label">Genre</InputLabel>
-                    <Select
-                        labelId="genre-label"
-                        id="genre-select"
-                        label="Genre"
-                        defaultValue=""
-                        value={props.genreFilter}
-                        onChange={handleGenreChange}
-                    >
-                        {genres.map((genre) => {
-                            return (
-                                <MenuItem key={genre.id} value={genre.id}>
-                                    {genre.name}
-                                </MenuItem>
-                            );
-                        })}
-                    </Select>
-                </FormControl>
-            </CardContent>
-            <CardMedia
-                sx={{ height: 300 }}
-                image={img}
-                title="Filter"
-            />
-            <CardContent>
-                <Typography variant="h5" component="h1">
-                    <SearchIcon fontSize="large" />
-                    Filter the movies.
-                    <br />
-                </Typography>
-            </CardContent>
-        </Card>
-    );
+        <TextField
+          sx={{ ...formControl }}
+          id="filled-search"
+          label="Search by title"
+          type="search"
+          variant="filled"
+          value={props.titleFilter}
+          onChange={handleTextChange}
+        />
+
+        <FormControl sx={{ ...formControl }}>
+          <InputLabel id="genre-label">Genre</InputLabel>
+          <Select
+            labelId="genre-label"
+            id="genre-select"
+            label="Genre"
+            value={props.genreFilter}
+            onChange={handleGenreChange}
+          >
+            {genres.map((genre) => (
+              <MenuItem key={genre.id} value={genre.id}>
+                {genre.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <TextField
+          sx={{ ...formControl }}
+          id="year-filter"
+          label="Release Year"
+          type="number"
+          variant="filled"
+          value={props.yearFilter}
+          onChange={handleYearChange}
+          InputProps={{
+            inputProps: { min: 1900, max: new Date().getFullYear() },
+          }}
+        />
+
+        <FormControl sx={{ ...formControl }}>
+          <InputLabel id="rating-label">Min Rating</InputLabel>
+          <Select
+            labelId="rating-label"
+            id="rating-select"
+            label="Min Rating"
+            value={props.minRatingFilter}
+            onChange={handleRatingChange}
+          >
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value={8}>8+</MenuItem>
+            <MenuItem value={7}>7+</MenuItem>
+            <MenuItem value={6}>6+</MenuItem>
+            <MenuItem value={5}>5+</MenuItem>
+          </Select>
+        </FormControl>
+      </CardContent>
+    </Card>
+  );
 }

@@ -1,4 +1,4 @@
-import React, { useContext  } from "react";
+import React, { useContext } from "react";
 import { MoviesContext } from "../../contexts/moviesContext";
 import { Link } from "react-router";
 import Card from "@mui/material/Card";
@@ -16,7 +16,7 @@ import Grid from "@mui/material/Grid";
 import Avatar from '@mui/material/Avatar';
 import img from '../../images/film-poster-placeholder.png';
 
-export default function MovieCard({ movie, action }) { 
+export default function MovieCard({ movie, action }) {
 
   const { favorites, addToFavorites } = useContext(MoviesContext);
 
@@ -74,15 +74,15 @@ export default function MovieCard({ movie, action }) {
         </Grid>
       </CardContent>
       <CardActions disableSpacing>
-      
+
         {action(movie)}
-      
+
         <Link to={`/movies/${movie.id}`}>
           <Button variant="outlined" size="medium" color="primary">
             More Info ...
           </Button>
         </Link>
-        
+
       </CardActions>
 
     </Card>
