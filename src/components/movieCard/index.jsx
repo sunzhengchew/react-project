@@ -9,82 +9,141 @@ import CardHeader from "@mui/material/CardHeader";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import CalendarIcon from "@mui/icons-material/CalendarTodayTwoTone";
+import CalendarTodayTwoToneIcon from "@mui/icons-material/CalendarTodayTwoTone";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
-import Avatar from '@mui/material/Avatar';
-import img from '../../images/film-poster-placeholder.png';
+import Avatar from "@mui/material/Avatar";
+import Tooltip from "@mui/material/Tooltip";
+import img from "../../images/film-poster-placeholder.png";
 
 export default function MovieCard({ movie, action }) {
-
   const { favorites, addToFavorites } = useContext(MoviesContext);
 
-  if (favorites.find((id) => id === movie.id)) {
-    movie.favorite = true;
-  } else {
-    movie.favorite = false
-  }
+  const isFavorite = favorites.includes(movie.id);
+  movie.favorite = isFavorite;
 
   const handleAddToFavorite = (e) => {
     e.preventDefault();
     addToFavorites(movie);
   };
 
-
   return (
-    <Card>
+    <Card
+      sx={{
+        background:
+          "linear-gradient(180deg, rgba(26,26,26,0.95) 0%, rgba(40,40,40,0.95) 100%)",
+        color: "white",
+        borderRadius: 3,
+        overflow: "hidden",
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        "&:hover": {
+          transform: "translateY(-6px)",
+          boxShadow: "0px 8px 30px rgba(0,0,0,0.5)",
+        },
+      }}
+    >
+
       <CardHeader
         avatar={
-          movie.favorite ? (
-            <Avatar sx={{ backgroundColor: 'red' }}>
-              <FavoriteIcon />
-            </Avatar>
-          ) : null
+          movie.favorite && (
+            <Tooltip title="In Favorites">
+              <Avatar sx={{ backgroundColor: "#f44336" }}>
+                <FavoriteIcon />
+              </Avatar>
+            </Tooltip>
+          )
         }
         title={
-          <Typography variant="h5" component="p">
-            {movie.title}{" "}
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: "bold",
+              color: "primary.main",
+              lineHeight: 1.2,
+              minHeight: 48,
+            }}
+          >
+            {movie.title}
           </Typography>
         }
       />
 
+
       <CardMedia
-        sx={{ height: 500 }}
+        sx={{
+          height: 420,
+          objectFit: "cover",
+          filter: "brightness(0.9)",
+          transition: "filter 0.3s ease",
+          "&:hover": { filter: "brightness(1)" },
+        }}
         image={
           movie.poster_path
             ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
             : img
         }
+        alt={movie.title}
       />
-      <CardContent>
-        <Grid container>
+
+
+      <CardContent sx={{ pt: 2 }}>
+        <Grid container spacing={1}>
           <Grid size={{ xs: 6 }}>
-            <Typography variant="h6" component="p">
-              <CalendarIcon fontSize="small" />
-              {movie.release_date}
+            <Typography variant="body2" color="text.secondary">
+              <CalendarTodayTwoToneIcon
+                fontSize="small"
+                sx={{ mr: 0.5, verticalAlign: "middle" }}
+              />
+              {movie.release_date || "N/A"}
             </Typography>
           </Grid>
           <Grid size={{ xs: 6 }}>
-            <Typography variant="h6" component="p">
-              <StarRateIcon fontSize="small" />
-              {"  "} {movie.vote_average}{" "}
+            <Typography variant="body2" color="text.secondary" align="right">
+              <StarRateIcon
+                fontSize="small"
+                sx={{ mr: 0.5, verticalAlign: "middle", color: "#ffb300" }}
+              />
+              {movie.vote_average ? movie.vote_average.toFixed(1) : "?"}
             </Typography>
           </Grid>
         </Grid>
       </CardContent>
-      <CardActions disableSpacing>
 
+
+      <CardActions
+        disableSpacing
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          px: 2,
+          pb: 2,
+        }}
+      >
         {action(movie)}
 
-        <Link to={`/movies/${movie.id}`}>
-          <Button variant="outlined" size="medium" color="primary">
-            More Info ...
+        <Link
+          to={`/movies/${movie.id}`}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <Button
+            variant="contained"
+            size="small"
+            sx={{
+              backgroundColor: "primary.main",
+              color: "black",
+              fontWeight: "bold",
+              textTransform: "none",
+              borderRadius: "20px",
+              "&:hover": {
+                backgroundColor: "#ffca28",
+              },
+            }}
+          >
+            More Info
           </Button>
         </Link>
-
       </CardActions>
-
     </Card>
   );
 }

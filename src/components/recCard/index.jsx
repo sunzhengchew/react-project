@@ -56,7 +56,7 @@ export default function recCard({ movie, action }) {
           </Typography>
         }
       />
-
+      <Link to={`/movies/${movie.id}`}>
       <CardMedia
         sx={{ height: 500 }}
         image={
@@ -65,18 +65,7 @@ export default function recCard({ movie, action }) {
             : img
         }
       />
-      <CardActions disableSpacing>
-      
-        {action(movie)}
-      
-        <Link to={`/movies/${movie.id}`}>
-          <Button variant="outlined" size="medium" color="primary">
-            More Info ...
-          </Button>
-        </Link>
-        
-      </CardActions>
-
+          </Link>
     </Card>
   );
 }

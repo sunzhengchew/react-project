@@ -16,6 +16,31 @@ import TopRatePage from "./pages/topRatePage";
 import PopularPage from "./pages/popularPage";
 import UpcomingPage from "./pages/upcomingPage";
 import PersonDetailsPage from "./pages/personDetailPage";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+
+const theme = createTheme({
+  palette: {
+    mode: "dark", 
+    primary: {
+      main: "#ffb300", 
+    },
+    secondary: {
+      main: "#f44336", 
+    },
+    background: {
+      default: "#121212",
+      paper: "#1e1e1e",
+    },
+  },
+  shape: {
+    borderRadius: 12,
+  },
+  typography: {
+    h5: { fontWeight: 600 },
+    body1: { color: "#ddd" },
+  },
+});
+
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,6 +54,7 @@ const queryClient = new QueryClient({
 
 const App = () => {
   return (
+    <ThemeProvider theme={theme}>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <SiteHeader />
@@ -51,6 +77,7 @@ const App = () => {
       </BrowserRouter>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
+    </ThemeProvider>
   );
 };
 

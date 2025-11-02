@@ -1,17 +1,19 @@
-import React from "react";
-import { getMovies } from "../api/tmdb-api";
-import PageTemplate from '../components/templateMovieListPage';
-import { useQuery } from '@tanstack/react-query';
-import Spinner from '../components/spinner';
-import AddToFavoritesIcon from '../components/cardIcons/addToFavorites';
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import Spinner from "../components/spinner";
+import PageTemplate from "../components/templateMovieListPage";
+import AddToFavoritesIcon from "../components/cardIcons/addToFavorites";
+import AddToPlaylistIcon from "../components/cardIcons/addToPlaylist";
 import { getPopularMovies } from "../api/tmdb-api";
-import AddToPlaylistIcon from '../components/cardIcons/addToPlaylist';
+import Pagination from "@mui/material/Pagination";
+import Box from "@mui/material/Box";
 
 const PopularPage = (props) => {
-
+  const [page, setPage] = useState(1);
+  const moviesPerPage = 20;
   const { data, error, isPending, isError } = useQuery({
-    queryKey: ["popular"],
-    queryFn: getPopularMovies,
+    queryKey: ["popular", page, moviesPerPage],
+    queryFn: () => getPopularMovies(page, moviesPerPage),
   })
 
   if (isPending) {
@@ -30,15 +32,48 @@ const PopularPage = (props) => {
   const addToFavorites = (movieId) => true
 
   return (
-    <PageTemplate
-      title="Popular Movies"
-      movies={movies}
-      action={(movie) => {
-        return <><AddToFavoritesIcon movie={movie} /><AddToPlaylistIcon movie={movie}/></>
-      }}
-    />
-  );
+    <>
+      <PageTemplate
+        title="Popular Movies"
+        movies={movies}
+        action={(movie) => (
+          <>
+            <AddToFavoritesIcon movie={movie} />
+            <AddToPlaylistIcon movie={movie} />
+          </>
+        )}
+      />
 
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          mt: 3,
+          mb: 4,
+        }}
+      >
+        <Pagination
+          sx={{
+            "& .MuiPaginationItem-root": {
+              color: "#624242ff",
+              borderColor: "#ffb300",
+            },
+            "& .MuiPaginationItem-root.Mui-selected": {
+              backgroundColor: "#ffb300",
+              color: "#000",
+            },
+          }}
+          count={Math.min(data.total_pages, 20)}
+          page={page}
+          onChange={(e, val) => setPage(val)}
+          showFirstButton
+          showLastButton
+          size="large"
+        />
+      </Box>
+    </>
+  );
 };
 
 export default PopularPage;

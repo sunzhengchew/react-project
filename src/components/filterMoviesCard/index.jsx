@@ -1,130 +1,169 @@
 import React from "react";
-import { useQuery } from '@tanstack/react-query';
-import Spinner from '../spinner';
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import TextField from "@mui/material/TextField";
+import { useQuery } from "@tanstack/react-query";
+import Spinner from "../spinner";
+import {
+  Card,
+  CardContent,
+  Typography,
+  InputLabel,
+  MenuItem,
+  TextField,
+  FormControl,
+  Select,
+  Button,
+  Stack,
+  Divider,
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import { getGenres } from "../../api/tmdb-api";
-import img from '../../images/pexels-dziana-hasanbekava-5480827.jpg'
-
-const formControl =
-{
-    margin: 1,
-    minWidth: "90%",
-    backgroundColor: "rgb(255, 255, 255)"
-};
 
 export default function FilterMoviesCard(props) {
+  const { data, error, isPending, isError } = useQuery({
+    queryKey: ["genres"],
+    queryFn: getGenres,
+  });
 
-    const { data, error, isPending, isError } = useQuery({
-        queryKey: ['genres'],
-        queryFn: getGenres,
-    });
+  if (isPending) return <Spinner />;
+  if (isError) return <h1>{error.message}</h1>;
 
-    if (isPending) {
-        return <Spinner />;
-    }
+  const genres = data.genres;
+  if (genres[0].name !== "All") genres.unshift({ id: "0", name: "All" });
 
-    if (isError) {
-        return <h1>{error.message}</h1>;
-    }
-    const genres = data.genres;
-    if (genres[0].name !== "All") {
-        genres.unshift({ id: "0", name: "All" });
-    }
-
-    const handleChange = (e, type, value) => {
-        e.preventDefault();
-        props.onUserInput(type, value);
-    };
-
-    const handleTextChange = (e, props) => {
-        handleChange(e, "name", e.target.value);
-    };
-
-    const handleGenreChange = (e) => {
-        handleChange(e, "genre", e.target.value);
-    };
-
-    const handleYearChange = (e) => {
-    handleChange(e, "year", e.target.value);
+  const handleChange = (e, type, value) => {
+    e.preventDefault();
+    props.onUserInput(type, value);
   };
 
-  const handleRatingChange = (e) => {
-    handleChange(e, "minRating", e.target.value);
+  const handleTextChange = (e) => handleChange(e, "name", e.target.value);
+  const handleGenreChange = (e) => handleChange(e, "genre", e.target.value);
+  const handleYearChange = (e) => handleChange(e, "year", e.target.value);
+  const handleRatingChange = (e) => handleChange(e, "minRating", e.target.value);
+
+  const resetFilters = () => {
+    props.onUserInput("name", "");
+    props.onUserInput("genre", "0");
+    props.onUserInput("year", "");
+    props.onUserInput("minRating", "");
   };
 
-
-    return (
-    <Card sx={{ backgroundColor: "rgb(204, 204, 0)" }} variant="outlined">
+  return (
+    <Card
+      sx={{
+        background: "linear-gradient(180deg, #1a1a1a, #2b2b2b)",
+        color: "white",
+        borderRadius: 3,
+        boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
+        p: 1,
+        mb: 3,
+      }}
+      variant="outlined"
+    >
       <CardContent>
-        <Typography variant="h5" component="h1">
-          <SearchIcon fontSize="large" />
-          Filter the movies.
+        <Typography
+          variant="h5"
+          component="h1"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            mb: 2,
+            fontWeight: "bold",
+            color: "primary.main",
+          }}
+        >
+          <SearchIcon fontSize="large" /> Filter Movies
         </Typography>
 
-        <TextField
-          sx={{ ...formControl }}
-          id="filled-search"
-          label="Search by title"
-          type="search"
-          variant="filled"
-          value={props.titleFilter}
-          onChange={handleTextChange}
-        />
+        <Stack spacing={2}>
+          <TextField
+            fullWidth
+            variant="filled"
+            label="Search by title"
+            type="search"
+            value={props.titleFilter}
+            onChange={handleTextChange}
+            sx={{
+              backgroundColor: "rgba(255,255,255,0.1)",
+              borderRadius: 1,
+              input: { color: "white" },
+            }}
+          />
 
-        <FormControl sx={{ ...formControl }}>
-          <InputLabel id="genre-label">Genre</InputLabel>
-          <Select
-            labelId="genre-label"
-            id="genre-select"
-            label="Genre"
-            value={props.genreFilter}
-            onChange={handleGenreChange}
-          >
-            {genres.map((genre) => (
-              <MenuItem key={genre.id} value={genre.id}>
-                {genre.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+          <FormControl fullWidth variant="filled">
+            <InputLabel id="genre-label" sx={{ color: "white" }}>
+              Genre
+            </InputLabel>
+            <Select
+              labelId="genre-label"
+              id="genre-select"
+              value={props.genreFilter}
+              onChange={handleGenreChange}
+              sx={{
+                color: "white",
+                ".MuiSelect-icon": { color: "white" },
+              }}
+            >
+              {genres.map((genre) => (
+                <MenuItem key={genre.id} value={genre.id}>
+                  {genre.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-        <TextField
-          sx={{ ...formControl }}
-          id="year-filter"
-          label="Release Year"
-          type="number"
-          variant="filled"
-          value={props.yearFilter}
-          onChange={handleYearChange}
-          InputProps={{
-            inputProps: { min: 1900, max: new Date().getFullYear() },
+          <TextField
+            fullWidth
+            variant="filled"
+            label="Release Year"
+            type="number"
+            value={props.yearFilter}
+            onChange={handleYearChange}
+            sx={{
+              backgroundColor: "rgba(255,255,255,0.1)",
+              borderRadius: 1,
+              input: { color: "white" },
+            }}
+          />
+          <FormControl fullWidth variant="filled">
+            <InputLabel id="rating-label" sx={{ color: "white" }}>
+              Minimum Rating
+            </InputLabel>
+            <Select
+              labelId="rating-label"
+              id="rating-select"
+              value={props.minRatingFilter}
+              onChange={handleRatingChange}
+              sx={{
+                color: "white",
+                ".MuiSelect-icon": { color: "white" },
+              }}
+            >
+              <MenuItem value="">All</MenuItem>
+              {[5, 6, 7, 8].map((r) => (
+                <MenuItem key={r} value={r}>
+                  {r}+
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Stack>
+
+        <Divider sx={{ my: 2, borderColor: "rgba(255,255,255,0.2)" }} />
+
+        <Button
+          variant="outlined"
+          fullWidth
+          onClick={resetFilters}
+          sx={{
+            color: "primary.main",
+            borderColor: "primary.main",
+            "&:hover": {
+              backgroundColor: "rgba(255,179,0,0.1)",
+            },
           }}
-        />
-
-        <FormControl sx={{ ...formControl }}>
-          <InputLabel id="rating-label">Min Rating</InputLabel>
-          <Select
-            labelId="rating-label"
-            id="rating-select"
-            label="Min Rating"
-            value={props.minRatingFilter}
-            onChange={handleRatingChange}
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value={8}>8+</MenuItem>
-            <MenuItem value={7}>7+</MenuItem>
-            <MenuItem value={6}>6+</MenuItem>
-            <MenuItem value={5}>5+</MenuItem>
-          </Select>
-        </FormControl>
+        >
+          Reset Filters
+        </Button>
       </CardContent>
     </Card>
   );

@@ -9,6 +9,7 @@ import RecommentList from "../components/templateRecommentList";
 import { getMovieCredits } from "../api/tmdb-api";
 import { Box } from "@mui/material";
 import Typography from '@mui/material/Typography';
+import noneImg from "../images/none.jpg";
 
 const MoviePage = (props) => {
   const { id } = useParams();
@@ -43,7 +44,6 @@ const MoviePage = (props) => {
           <PageTemplate movie={movie}>
             <MovieDetails movie={movie} />
           </PageTemplate>
-
           <h2 style={{ textAlign: "center", marginTop: "2rem" }}>Cast</h2>
           {creditsLoading ? (
             <Spinner />
@@ -76,7 +76,7 @@ const MoviePage = (props) => {
                     src={
                       actor.profile_path
                         ? `https://image.tmdb.org/t/p/w185/${actor.profile_path}`
-                        : "https://via.placeholder.com/185x278?text=No+Image"
+                        : noneImg
                     }
                     alt={actor.name}
                     style={{
@@ -97,9 +97,7 @@ const MoviePage = (props) => {
               ))}
             </Box>
           )}
-
           <h2 style={{ textAlign: "center", marginTop: "2rem" }}>Recommended Movies</h2>
-
           {recPending ? (
             <Spinner />
           ) : recIsError ? (

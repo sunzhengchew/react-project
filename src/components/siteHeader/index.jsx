@@ -8,11 +8,12 @@ import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { useNavigate } from "react-router";
-import { styled } from '@mui/material/styles';
-import { useTheme } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import MovieCreationTwoToneIcon from "@mui/icons-material/MovieCreationTwoTone";
+import Box from "@mui/material/Box";
 
-const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
+const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const SiteHeader = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -20,7 +21,6 @@ const SiteHeader = () => {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  
   const navigate = useNavigate();
 
   const menuOptions = [
@@ -30,7 +30,7 @@ const SiteHeader = () => {
     { label: "Trending Today", path: "/movies/trending/today" },
     { label: "Top Rated", path: "/movies/top-rated" },
     { label: "Popular", path: "/movies/popular" },
-    { label: "Upcoming", path: "/movies/upcoming" }
+    { label: "Upcoming", path: "/movies/upcoming" },
   ];
 
   const handleMenuSelect = (pageURL) => {
@@ -44,60 +44,63 @@ const SiteHeader = () => {
 
   return (
     <>
-      <AppBar position="fixed" color="secondary">
+      <AppBar
+        position="fixed"
+        sx={{
+          background: "linear-gradient(90deg, #1a1a1a 0%, #2b2b2b 80%)",
+          color: "primary.main",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
+        }}
+      >
         <Toolbar>
-          <Typography variant="h4" sx={{ flexGrow: 1 }}>
-            TMDB Client
-          </Typography>
-            {isMobile ? (
-              <>
-                <IconButton
-                  aria-label="menu"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleMenu}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              flexGrow: 1,
+            }}
+            onClick={() => navigate("/")}
+          >
+            <MovieCreationTwoToneIcon
+              fontSize="large"
+              sx={{
+                color: "primary.main",
+                mr: 1,
+              }}
+            />
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: "bold",
+                color: "primary.main",
+                letterSpacing: 1,
+              }}
+            >
+              TMDB Client
+            </Typography>
+          </Box>{(
+            <Box sx={{ display: "flex", gap: 2 }}>
+              {menuOptions.map((opt) => (
+                <Button
+                  key={opt.label}
                   color="inherit"
-                >
-                  <MenuIcon />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
+                  onClick={() => handleMenuSelect(opt.path)}
+                  sx={{
+                    color: "primary.main",
+                    fontWeight: "bold",
+                    "&:hover": {
+                      color: "white",
+                      backgroundColor: "rgba(255,179,0,0.1)",
+                    },
+                    borderRadius: "20px",
+                    px: 2,
                   }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={open}
-                  onClose={() => setAnchorEl(null)}
                 >
-                  {menuOptions.map((opt) => (
-                    <MenuItem
-                      key={opt.label}
-                      onClick={() => handleMenuSelect(opt.path)}
-                    >
-                      {opt.label}
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </>
-            ) : (
-              <>
-                {menuOptions.map((opt) => (
-                  <Button
-                    key={opt.label}
-                    color="inherit"
-                    onClick={() => handleMenuSelect(opt.path)}
-                  >
-                    {opt.label}
-                  </Button>
-                ))}
-              </>
-            )}
+                  {opt.label}
+                </Button>
+              ))}
+            </Box>
+          )}
         </Toolbar>
       </AppBar>
       <Offset />

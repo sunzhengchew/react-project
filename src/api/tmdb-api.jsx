@@ -15,7 +15,6 @@ export const getMovies = () => {
 };
 
 export const getMovie = (args) => {
-  //console.log(args)
   const [, idPart] = args.queryKey;
   const { id } = idPart;
   return fetch(
@@ -70,35 +69,65 @@ export const getMovie = (args) => {
    });
   };
 
-  export const getTrendingMoviesToday = async () => {
+export const getTrendingMoviesToday = async (page = 1, perPage = 20) => {
+  const apiKey = import.meta.env.VITE_TMDB_KEY;
+
   const response = await fetch(
-    `https://api.themoviedb.org/3/trending/movie/day?api_key=${import.meta.env.VITE_TMDB_KEY}`
+    `https://api.themoviedb.org/3/trending/movie/day?api_key=${apiKey}&page=${page}`
   );
+
   if (!response.ok) {
     throw new Error("Failed to fetch trending movies");
   }
-  return await response.json();
+
+  const data = await response.json();
+
+  return { results: data.results, total_pages: data.total_pages || 1 };
 };
 
-export const getTopRateMoviesToday = async () => {
-  const response = await fetch(
-    `https://api.themoviedb.org/3/movie/top_rated?api_key=${import.meta.env.VITE_TMDB_KEY}`
+
+export const getTopRateMoviesToday = async (page = 1, perPage = 40) => {
+  const apiKey = import.meta.env.VITE_TMDB_KEY;
+  const moviesPerTMDBPage = 20;
+  const pagesToFetch = Math.ceil(perPage / moviesPerTMDBPage);
+
+  const responses = await Promise.all(
+    Array.from({ length: pagesToFetch }, (_, i) =>
+      fetch(
+        `https://api.themoviedb.org/3/movie/top_rated?api_key=${apiKey}&page=${page + i}`
+      )
+    )
   );
-  if (!response.ok) {
-    throw new Error("Failed to fetch trending movies");
-  }
-  return await response.json();
+
+  const results = await Promise.all(responses.map((r) => r.json()));
+
+  // Merge the movie arrays together
+  const mergedMovies = results.flatMap((r) => r.results);
+  return { results: mergedMovies, total_pages: results[0].total_pages };
 };
 
-export const getPopularMovies = async () => {
-  const response = await fetch(
-    `https://api.themoviedb.org/3/movie/popular?api_key=${import.meta.env.VITE_TMDB_KEY}`
+
+export const getPopularMovies = async (page = 1, perPage = 40) => {
+  const apiKey = import.meta.env.VITE_TMDB_KEY;
+  const moviesPerTMDBPage = 20;
+  const pagesToFetch = Math.ceil(perPage / moviesPerTMDBPage);
+
+  const responses = await Promise.all(
+    Array.from({ length: pagesToFetch }, (_, i) =>
+      fetch(
+        `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&page=${page + i}`
+      )
+    )
   );
-  if (!response.ok) {
-    throw new Error("Failed to fetch trending movies");
-  }
-  return await response.json();
+
+  const results = await Promise.all(responses.map((r) => r.json()));
+
+  // Merge the movie arrays together
+  const mergedMovies = results.flatMap((r) => r.results);
+  return { results: mergedMovies, total_pages: results[0].total_pages };
 };
+
+
 
 export const getUpcomingMovies = async () => {
   const response = await fetch(
